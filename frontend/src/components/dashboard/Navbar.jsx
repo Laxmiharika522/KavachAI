@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Shield, Bell, Settings, Globe, LogOut, Menu, X, Activity, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
+import { supabase } from '../../supabaseClient';
 
-export default function Navbar({ lang, onLangToggle }) {
+export default function Navbar({ lang, onLangToggle, session }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [notifOpen, setNotifOpen] = useState(false);
@@ -126,9 +127,9 @@ export default function Navbar({ lang, onLangToggle }) {
             <div className="hidden sm:block w-px h-8 bg-slate-200 dark:bg-white/10 mx-1"></div>
 
             {/* Auth Button */}
-            {localStorage.getItem('isAuthenticated') === 'true' ? (
+            {session ? (
               <button 
-                onClick={() => { localStorage.removeItem('isAuthenticated'); navigate('/login'); }}
+                onClick={async () => { await supabase.auth.signOut(); navigate('/login'); }}
                 className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-500/20"
               >
                 <LogOut className="w-4 h-4" />
@@ -198,9 +199,9 @@ export default function Navbar({ lang, onLangToggle }) {
               </button>
             </div>
 
-            {localStorage.getItem('isAuthenticated') === 'true' ? (
+            {session ? (
               <button 
-                onClick={() => { localStorage.removeItem('isAuthenticated'); navigate('/login'); setMobileMenuOpen(false); }}
+                onClick={async () => { await supabase.auth.signOut(); navigate('/login'); setMobileMenuOpen(false); }}
                 className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-semibold text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all mt-2"
               >
                 <LogOut className="w-5 h-5" />
