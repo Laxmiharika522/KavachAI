@@ -74,3 +74,7 @@ npm start
 
 ## 🔒 Security & Gitignore
 This project uses a strict `.gitignore` file. Any file ending in `.env` or located at `backend/.env` is completely ignored by Git. **Your API keys are safe and will not be pushed to your repository.**
+
+
+
+A project by Kathyayani, Harika, Dhatrri, Nanditha, 
