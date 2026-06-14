@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Shield, Bell, Settings, Globe, LogOut, Menu, X, Activity, Sun, Moon } from 'lucide-react';
+import { Shield, Bell, Settings, Globe, LogOut, Menu, X, Activity, Sun, Moon, Search } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
 import { supabase } from '../../supabaseClient';
 
@@ -15,6 +15,7 @@ export default function Navbar({ lang, onLangToggle, session }) {
     { path: '/dashboard', label: 'Dashboard', icon: <Activity className="w-4 h-4" /> },
     { path: '/analyzer', label: 'Analyzer', icon: <Shield className="w-4 h-4" /> },
     { path: '/encyclopedia', label: 'Encyclopedia', icon: <Globe className="w-4 h-4" /> },
+    { path: '/breach-check', label: 'Breach Check', icon: <Search className="w-4 h-4" /> },
   ];
 
   return (

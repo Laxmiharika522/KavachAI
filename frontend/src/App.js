@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Dashboard from './components/dashboard/Dashboard';
 import Encyclopedia from './components/dashboard/Encyclopedia';
+import BreachCheckPage from './pages/BreachCheckPage';
 import './App.css';
 
 function ProtectedRoute({ session, children }) {
@@ -27,6 +28,7 @@ function AppLayout({ session }) {
         <Route path="/analyzer" element={<AnalyzerPage />} />
         <Route path="/dashboard" element={<Dashboard lang={lang} />} />
         <Route path="/encyclopedia" element={<Encyclopedia lang={lang} />} />
+        <Route path="/breach-check" element={<BreachCheckPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

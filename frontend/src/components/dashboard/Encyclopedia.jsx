@@ -162,6 +162,66 @@ const scams = [
       "Unusual attachments near the top of the ATM machine"
     ],
     whatToDo: "Always wiggle the card slot before inserting, and cover the keypad with your hand while typing PIN."
+  },
+  {
+    id: "tech-support",
+    name: "Tech Support / Remote Access",
+    icon: <Terminal className="w-5 h-5" />,
+    severity: "HIGH",
+    color: "orange",
+    trigger: `"Your computer has a virus. Call us to fix it."`,
+    metadata: { vector: "Pop-up / Call", avgLoss: "₹25,000", target: "Seniors / General" },
+    steps: [
+      { title: "The Hook", desc: "A scary pop-up claims your PC is infected, or you get a call from 'Microsoft/Apple support'." },
+      { title: "The Bait", desc: "They ask you to download remote access software like AnyDesk to 'diagnose' the issue." },
+      { title: "The Trap", desc: "Once connected, they steal your files, access your bank accounts, or demand payment for fake services." }
+    ],
+    redFlags: [
+      "Unsolicited calls from tech giants (Microsoft/Apple don't call you)",
+      "Loud, blaring pop-ups demanding you call a toll-free number",
+      "Request to install remote desktop applications like AnyDesk or TeamViewer"
+    ],
+    whatToDo: "Never give remote access to your computer. Close the browser or restart your PC if you see a locked pop-up."
+  },
+  {
+    id: "fake-delivery",
+    name: "Fake Parcel / Customs Scam",
+    icon: <AlertTriangle className="w-5 h-5" />,
+    severity: "MEDIUM",
+    color: "yellow",
+    trigger: `"Your parcel is stuck at customs. Pay ₹50 fee."`,
+    metadata: { vector: "SMS / Email", avgLoss: "₹5,000", target: "Online Shoppers" },
+    steps: [
+      { title: "The Hook", desc: "You receive an SMS from 'India Post' or a courier company about a failed delivery." },
+      { title: "The Bait", desc: "The message includes a link to track the parcel or pay a small redelivery/customs fee." },
+      { title: "The Trap", desc: "The link takes you to a fake website where you enter your credit card details, which are then stolen." }
+    ],
+    redFlags: [
+      "Unexpected delivery notifications when you haven't ordered anything",
+      "Links with slight misspellings (e.g., indiapost-track.com)",
+      "Urgent demands for a tiny payment to release a package"
+    ],
+    whatToDo: "Go to the official courier website by typing the URL yourself and track your order there. Do not click the SMS link."
+  },
+  {
+    id: "romance-scam",
+    name: "Romance / Pig Butchering",
+    icon: <Activity className="w-5 h-5" />,
+    severity: "CRITICAL",
+    color: "red",
+    trigger: `"I love you, but I need money for an emergency."`,
+    metadata: { vector: "Dating Apps", avgLoss: "₹10 Lakhs+", target: "Singles" },
+    steps: [
+      { title: "The Hook", desc: "Scammer builds a romantic relationship over months on dating apps or social media." },
+      { title: "The Bait", desc: "They suddenly face a fake medical emergency or introduce you to a 'secret' crypto investment." },
+      { title: "The Trap", desc: "You send money out of trust or love, and they vanish or keep asking for more until you're bankrupt." }
+    ],
+    redFlags: [
+      "They profess strong feelings very quickly but always avoid video calls",
+      "They live abroad or travel constantly for work",
+      "They ask for financial help or push you to invest in a specific platform"
+    ],
+    whatToDo: "Never send money or crypto to someone you've only met online. Do a reverse image search on their photos."
   }
 ];
 
