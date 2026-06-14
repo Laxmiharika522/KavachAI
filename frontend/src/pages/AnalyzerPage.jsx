@@ -1,44 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-
-/* ═══════════════════════════════════════════
-   DEMO DATA
-═══════════════════════════════════════════ */
-const DEMO_RESULT = {
-  risk_score: 92,
-  scam_type: 'KYC Phishing',
-  confidence: 97,
-  severity: 'Critical',
-  red_flags: [
-    'Urgency to click a link immediately',
-    'Impersonates a trusted bank (SBI)',
-    'Suspicious domain not matching official site',
-    'Requests sensitive account details',
-  ],
-  indicators: ['Phishing', 'Spoofed Domain', 'Urgent Language', 'Financial Fraud', 'Credential Theft'],
-  recommended_action: 'Do NOT click any link. Your bank never asks for KYC via SMS. Call SBI directly on 1800-11-2211 to verify.',
-  ai_explanation: 'This message exhibits multiple hallmarks of a KYC phishing attack. The sender impersonates a legitimate banking institution (SBI) and creates artificial urgency by claiming account suspension. The embedded URL uses a lookalike domain to steal credentials. Social engineering tactics include fear of account loss to bypass critical thinking.',
-}
-
-const RECENT_ACTIVITY = [
-  { type: 'danger',  label: 'Amazon Delivery Scam',    time: '2m ago',  score: 94 },
-  { type: 'danger',  label: 'Fake Bank SMS',            time: '18m ago', score: 88 },
-  { type: 'warning', label: 'WhatsApp Lottery Scam',   time: '1h ago',  score: 71 },
-  { type: 'success', label: 'Suspicious Login Email',   time: '3h ago',  score: 12 },
-]
 
 const THREAT_FEED = [
   { icon: '🚨', title: 'New Phishing Campaign Detected',  tag: 'CRITICAL', time: 'Just now' },
   { icon: '⚠️', title: 'High-Risk Banking Scam Surge',   tag: 'HIGH',     time: '5m ago'  },
   { icon: '🔴', title: 'Malicious Domain Identified',     tag: 'HIGH',     time: '22m ago' },
   { icon: '⚡', title: 'AI Model Updated — v3.2',         tag: 'INFO',     time: '1h ago'  },
-]
-
-const STAT_CARDS = [
-  { label: 'Threats Blocked',  value: '2,841', delta: '+12%', color: '#EF4444', icon: '🛡' },
-  { label: 'Detected Scams',   value: '1,203', delta: '+8%',  color: '#F59E0B', icon: '🔍' },
-  { label: 'Safe Messages',    value: '14.2K', delta: '+23%', color: '#22C55E', icon: '✅' },
-  { label: 'URLs Analyzed',    value: '8,941', delta: '+5%',  color: '#06B6D4', icon: '🔗' },
 ]
 
 /* ═══════════════════════════════════════════
@@ -67,8 +34,8 @@ function ScoreRing({ score = 94 }) {
    RISK SCORE BAR
 ═══════════════════════════════════════════ */
 function RiskBar({ score }) {
-  const color = score >= 75 ? '#EF4444' : score >= 40 ? '#F59E0B' : '#22C55E'
-  const label = score >= 75 ? 'Critical' : score >= 40 ? 'Suspicious' : 'Safe'
+  const color = score >= 71 ? '#EF4444' : score >= 41 ? '#F97316' : score >= 21 ? '#EAB308' : '#22C55E'
+  const label = score >= 71 ? 'Critical' : score >= 41 ? 'Moderate Risk' : score >= 21 ? 'Slightly Suspicious' : 'Safe'
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
@@ -149,13 +116,31 @@ function UploadArea({ file, setFile, preview, setPreview }) {
 ═══════════════════════════════════════════ */
 function ResultsPanel({ result, onReset, isDemo = false }) {
   const score = result.risk_score
-  const isCritical = score >= 75
-  const isSuspicious = score >= 40 && score < 75
-  const accentColor = isCritical ? '#EF4444' : isSuspicious ? '#F59E0B' : '#22C55E'
-  const severity = result.severity || (isCritical ? 'Critical' : isSuspicious ? 'Suspicious' : 'Safe')
-  const confidence = result.confidence || null
-  const indicators = result.indicators || []
-  const ai_explanation = result.ai_explanation || null
+  const isCritical = score >= 71;
+  const isModerate = score >= 41 && score <= 70;
+  const isSuspicious = score >= 21 && score <= 40;
+
+  const accentColor = isCritical ? '#EF4444' : isModerate ? '#F97316' : isSuspicious ? '#EAB308' : '#22C55E';
+  const severity = result.severity || (isCritical ? 'Critical' : isModerate ? 'Moderate Risk' : isSuspicious ? 'Slightly Suspicious' : 'Safe');
+  const confidence = result.confidence || null;
+  const indicators = result.indicators || [];
+  const ai_explanation = result.ai_explanation || null;
+
+  const getActionTags = (s) => {
+    if (s >= 71) return ['Do Not Click Links', 'Block Sender', 'Report Message', 'Delete Conversation'];
+    if (s >= 41) return ['Verify Sender Identity', 'Do Not Share Info', 'Proceed with Caution'];
+    if (s >= 21) return ['Double-Check Details', 'Ask for Clarification'];
+    return ['Safe to Reply', 'No Threats Detected'];
+  };
+  const actionTags = getActionTags(score);
+
+  const getBoxColors = (s) => {
+    if (s >= 71) return { bg: 'bg-red-50 dark:bg-red-500/5', border: 'border-red-200 dark:border-red-500/20', text: 'text-red-600 dark:text-red-400', check: '#EF4444', chipBg: 'bg-red-100/50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20', icon: '🚨' };
+    if (s >= 41) return { bg: 'bg-orange-50 dark:bg-orange-500/5', border: 'border-orange-200 dark:border-orange-500/20', text: 'text-orange-600 dark:text-orange-400', check: '#F97316', chipBg: 'bg-orange-100/50 dark:bg-orange-500/10 border-orange-200 dark:border-orange-500/20', icon: '⚠️' };
+    if (s >= 21) return { bg: 'bg-yellow-50 dark:bg-yellow-500/5', border: 'border-yellow-200 dark:border-yellow-500/20', text: 'text-yellow-600 dark:text-yellow-400', check: '#EAB308', chipBg: 'bg-yellow-100/50 dark:bg-yellow-500/10 border-yellow-200 dark:border-yellow-500/20', icon: '🤔' };
+    return { bg: 'bg-emerald-50 dark:bg-emerald-500/5', border: 'border-emerald-200 dark:border-emerald-500/20', text: 'text-emerald-600 dark:text-emerald-400', check: '#00D084', chipBg: 'bg-emerald-100/50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20', icon: '✅' };
+  };
+  const colors = getBoxColors(score);
 
   return (
     <motion.div key="results" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
@@ -166,14 +151,14 @@ function ResultsPanel({ result, onReset, isDemo = false }) {
         <div className="flex items-center gap-3 mb-5">
           <div className="w-11 h-11 rounded-xl shrink-0 flex items-center justify-center text-[22px]"
             style={{ background: `${accentColor}15` }}>
-            {isCritical ? '🚨' : isSuspicious ? '⚠️' : '✅'}
+            {colors.icon}
           </div>
           <div>
             <h3 className="text-[16px] font-bold text-slate-900 dark:text-white transition-colors">Security Report</h3>
             <p className="text-[12px] text-slate-500 dark:text-slate-400 transition-colors">AI Threat Analysis Complete</p>
           </div>
           <div className="ml-auto">
-            <span className={`badge ${isCritical ? 'badge-danger' : isSuspicious ? 'badge-warning' : 'badge-success'} text-[13px] px-3.5 py-1.5 transition-colors`}>
+            <span className={`badge ${isCritical ? 'badge-danger' : isModerate ? 'bg-orange-500 text-white' : isSuspicious ? 'bg-yellow-500 text-white' : 'badge-success'} text-[13px] px-3.5 py-1.5 transition-colors rounded-full font-semibold`}>
               {severity}
             </span>
           </div>
@@ -238,18 +223,18 @@ function ResultsPanel({ result, onReset, isDemo = false }) {
       </div>
 
       {/* Recommended Actions */}
-      <div className="card p-5 bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-200 dark:border-emerald-500/20 transition-colors duration-300">
-        <h4 className="text-[14px] font-semibold text-emerald-600 dark:text-emerald-400 mb-3 flex items-center gap-2 transition-colors">
-          <span className="text-[16px]">✅</span> Recommended Actions
+      <div className={`card p-5 ${colors.bg} border ${colors.border} transition-colors duration-300`}>
+        <h4 className={`text-[14px] font-semibold ${colors.text} mb-3 flex items-center gap-2 transition-colors`}>
+          <span className="text-[16px]">{colors.icon}</span> Recommended Actions
         </h4>
         <p className="text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed mb-3.5 transition-colors">
           {result.recommended_action}
         </p>
         <div className="grid grid-cols-2 gap-2">
-          {['Do Not Click Links', 'Block Sender', 'Report Message', 'Delete Conversation'].map(a => (
-            <div key={a} className="flex gap-2 items-center px-2.5 py-2 rounded-lg bg-emerald-100/50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 transition-colors">
+          {actionTags.map(a => (
+            <div key={a} className={`flex gap-2 items-center px-2.5 py-2 rounded-lg ${colors.chipBg} border transition-colors`}>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M2 6l3 3 5-5" stroke="#00D084" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M2 6l3 3 5-5" stroke={colors.check} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               <span className="text-[12px] text-slate-700 dark:text-slate-300 font-medium transition-colors">{a}</span>
             </div>
@@ -278,6 +263,66 @@ export default function AnalyzerPage() {
   const [imageFile,  setImageFile]  = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
   const [isDemo,     setIsDemo]     = useState(false)
+  const [securityScore, setSecurityScore] = useState(94)
+
+  const [stats, setStats] = useState({
+    blocked: 142,
+    scams: 89,
+    safe: 312,
+    urls: 115
+  });
+
+  const [recentActivity, setRecentActivity] = useState([
+    { type: 'danger',  label: 'Amazon Delivery Scam',    time: '2m ago',  score: 94 },
+    { type: 'danger',  label: 'Fake Bank SMS',            time: '18m ago', score: 88 },
+    { type: 'warning', label: 'WhatsApp Lottery Scam',   time: '1h ago',  score: 71 },
+    { type: 'success', label: 'Suspicious Login Email',   time: '3h ago',  score: 12 },
+  ]);
+
+  // Realistic Score Simulation: Recover score over time
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSecurityScore(prev => {
+        if (prev < 100) return prev + 1; // Slowly regain trust if no threats
+        return prev;
+      });
+    }, 20000); // +1 point every 20 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleScanCompletion = (data, isDemoFlag) => {
+    setIsDemo(isDemoFlag)
+    setResult(data)
+    
+    // Impact the overall security score based on the scan
+    const risk = data.risk_score || 0;
+    setSecurityScore(prev => {
+      if (risk >= 71) {
+        return Math.max(40, prev - 35); // Critical threat drops score significantly
+      } else if (risk >= 41) {
+        return Math.max(60, prev - 15); // Suspicious drops it moderately
+      } else {
+        return Math.min(100, prev + 5); // Safe interaction boosts it slightly
+      }
+    });
+
+    // Dynamically update recent activity
+    setRecentActivity(prev => {
+      const newType = risk >= 71 ? 'danger' : risk >= 41 ? 'warning' : 'success';
+      const label = data.scam_type || (activeTab === 'url' ? 'URL Scan' : 'Message Scan');
+      const newItem = { type: newType, label, time: 'Just now', score: risk };
+      return [newItem, ...prev].slice(0, 4); // Keep only latest 4
+    });
+
+    // Dynamically update stats
+    setStats(prev => ({
+      ...prev,
+      urls: activeTab === 'url' ? prev.urls + 1 : prev.urls,
+      blocked: risk >= 71 ? prev.blocked + 1 : prev.blocked,
+      scams: risk >= 41 ? prev.scams + 1 : prev.scams,
+      safe: risk <= 40 ? prev.safe + 1 : prev.safe
+    }));
+  }
 
   const displayResult = result
 
@@ -300,14 +345,15 @@ export default function AnalyzerPage() {
           method: 'POST',
           body: formData,
         })
-        if (!res.ok) throw new Error(`Server error: ${res.status}`)
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || `Server error: ${res.status}`);
+        }
         const data = await res.json()
-        setIsDemo(false)
-        setResult(data)
+        handleScanCompletion(data, false)
       } catch (err) {
-        // Backend unavailable — show demo result with a clear demo banner inside the report
-        setIsDemo(true)
-        setResult(DEMO_RESULT)
+        // Show the actual API error (e.g. Rate limit) instead of demo result
+        setError(err.message)
       } finally {
         setLoading(false)
       }
@@ -319,14 +365,15 @@ export default function AnalyzerPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: textInput, lang: 'en' }),
         })
-        if (!res.ok) throw new Error(`Server error: ${res.status}`)
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || `Server error: ${res.status}`);
+        }
         const data = await res.json()
-        setIsDemo(false)
-        setResult(data)
-      } catch {
-        // Message Analysis: AI failed — show demo banner inside the results card
-        setIsDemo(true)
-        setResult(DEMO_RESULT)
+        handleScanCompletion(data, false)
+      } catch (err) {
+        // Show the actual API error (e.g. Rate limit) instead of demo result
+        setError(err.message)
       } finally {
         setLoading(false)
       }
@@ -338,14 +385,15 @@ export default function AnalyzerPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url: urlInput, lang: 'en' }),
         })
-        if (!res.ok) throw new Error(`Server error: ${res.status}`)
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || `Server error: ${res.status}`);
+        }
         const data = await res.json()
-        setIsDemo(false)
-        setResult(data)
-      } catch {
-        // URL Scanner: AI failed — show demo banner inside the results card
-        setIsDemo(true)
-        setResult(DEMO_RESULT)
+        handleScanCompletion(data, false)
+      } catch (err) {
+        // Show the actual API error (e.g. Rate limit) instead of demo result
+        setError(err.message)
       } finally {
         setLoading(false)
       }
@@ -543,14 +591,14 @@ export default function AnalyzerPage() {
               <div className="text-[12px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-[0.05em] mb-4 transition-colors">
                 Security Score
               </div>
-              <ScoreRing score={94} />
+              <ScoreRing score={securityScore} />
               <div className="mt-3">
-                <span className="badge badge-success text-[12px] px-3.5 py-1.5 transition-colors">
-                  ✓ Protected
+                <span className={`badge ${securityScore >= 90 ? 'badge-success' : securityScore >= 70 ? 'badge-warning' : 'badge-danger'} text-[12px] px-3.5 py-1.5 transition-colors`}>
+                  {securityScore >= 90 ? '✓ Protected' : securityScore >= 70 ? '⚠️ Warning' : '🚨 At Risk'}
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2.5 leading-relaxed transition-colors">
-                Your security posture is strong. Last scanned 2m ago.
+                {securityScore >= 90 ? 'Your security posture is strong. No recent critical threats.' : securityScore >= 70 ? 'Recent suspicious activity detected. Exercise caution.' : 'Critical threats detected recently! High alert.'}
               </p>
             </div>
 
@@ -560,7 +608,12 @@ export default function AnalyzerPage() {
                 Threat Statistics
               </div>
               <div className="grid grid-cols-2 gap-2.5">
-                {STAT_CARDS.map(s => (
+                {[
+                  { label: 'Threats Blocked',  value: stats.blocked.toLocaleString(), delta: '+12%', color: '#EF4444', icon: '🛡' },
+                  { label: 'Detected Scams',   value: stats.scams.toLocaleString(), delta: '+8%',  color: '#F59E0B', icon: '🔍' },
+                  { label: 'Safe Messages',    value: stats.safe.toLocaleString(), delta: '+23%', color: '#22C55E', icon: '✅' },
+                  { label: 'URLs Analyzed',    value: stats.urls.toLocaleString(), delta: '+5%',  color: '#06B6D4', icon: '🔗' },
+                ].map(s => (
                   <div key={s.label} className="p-3 rounded-[10px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 transition-colors">
                     <div className="text-[18px] mb-1.5">{s.icon}</div>
                     <div className="text-[18px] font-extrabold text-slate-900 dark:text-white leading-none transition-colors">{s.value}</div>
@@ -577,7 +630,7 @@ export default function AnalyzerPage() {
                 Recent Activity
               </div>
               <div className="flex flex-col gap-2">
-                {RECENT_ACTIVITY.map((a, i) => (
+                {recentActivity.map((a, i) => (
                   <div key={i} className="flex items-center gap-2.5 p-2.5 rounded-lg bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 cursor-pointer transition-colors">
                     <div className={`w-2 h-2 rounded-full shrink-0 ${a.type === 'danger' ? 'bg-red-500' : a.type === 'warning' ? 'bg-amber-500' : 'bg-emerald-500'}`}/>
                     <div className="flex-1 min-w-0">

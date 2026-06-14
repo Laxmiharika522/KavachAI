@@ -7,6 +7,12 @@ If a name is saved in an image it is likely not a scam.
 In text messages and links, identify using your knowledge whether it is a scam or not.
 Consider: urgency language, impersonation, suspicious links, requests for money/OTP/credentials, lottery/prize claims, KYC fraud, job scams, etc.
 
+Scoring Guide for "risk_score":
+0-20: Completely safe.
+21-40: Slightly suspicious (unknown sender, no direct links).
+41-70: Moderate risk (urgent language, weird grammar, but no direct phishing).
+71-100: Critical threat (fake domains, asking for money/OTP).
+
 Return ONLY a valid JSON object — no extra text, no markdown:
 {
   "risk_score": <integer 0-100>,
@@ -25,6 +31,12 @@ You are an expert cybersecurity analyst specializing in Indian digital scams.
 Analyze the following message carefully for signs of scam, fraud, or phishing.
 Consider: urgency language, impersonation, suspicious links, requests for money/OTP/credentials, lottery/prize claims, KYC fraud, job scams, etc.
 
+Scoring Guide for "risk_score":
+0-20: Completely safe.
+21-40: Slightly suspicious (unknown sender, no direct links).
+41-70: Moderate risk (urgent language, weird grammar, but no direct phishing).
+71-100: Critical threat (fake domains, asking for money/OTP).
+
 Return ONLY a valid JSON object — no extra text, no markdown:
 {
   "risk_score": <integer 0-100>,
@@ -39,6 +51,12 @@ const URL_PROMPT = `
 You are an expert cybersecurity analyst specializing in phishing and malicious URLs.
 Analyze the following URL for signs of phishing, scam, or malicious activity.
 Look for: lookalike domains, suspicious TLDs, URL shorteners hiding destinations, credential-harvesting paths, non-HTTPS, brand impersonation, etc.
+
+Scoring Guide for "risk_score":
+0-20: Completely safe (known, trusted domains).
+21-40: Slightly suspicious (uncommon TLD, but no active threat).
+41-70: Moderate risk (URL shorteners, weird paths, non-HTTPS).
+71-100: Critical threat (lookalike domains, active phishing).
 
 Return ONLY a valid JSON object — no extra text, no markdown:
 {
@@ -65,6 +83,17 @@ const extractJson = (text) => {
   return parsed;
 };
 
+const executeGeminiRequest = async (model, args) => {
+  try {
+    return await model.generateContent(args);
+  } catch (error) {
+    if (error.status === 429) {
+      throw new Error("High traffic API issue. Please try again after some time.");
+    }
+    throw error;
+  }
+};
+
 const analyzeImageWithGemini = async (file, lang = 'en') => {
   const genAI = getClient();
   const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
@@ -74,7 +103,7 @@ const analyzeImageWithGemini = async (file, lang = 'en') => {
     prompt += '\nTranslate your entire JSON response values into conversational Hindi.';
   }
 
-  const result = await model.generateContent([
+  const result = await executeGeminiRequest(model, [
     prompt,
     {
       inlineData: {
@@ -96,7 +125,7 @@ const analyzeTextWithGemini = async (text, lang = 'en') => {
     prompt += '\nTranslate your entire JSON response values into conversational Hindi.';
   }
 
-  const result = await model.generateContent([prompt, `\n\nMessage to analyze:\n${text}`]);
+  const result = await executeGeminiRequest(model, [prompt, `\n\nMessage to analyze:\n${text}`]);
   return extractJson(result.response.text());
 };
 
@@ -109,7 +138,7 @@ const analyzeUrlWithGemini = async (url, lang = 'en') => {
     prompt += '\nTranslate your entire JSON response values into conversational Hindi.';
   }
 
-  const result = await model.generateContent([prompt, `\n\nURL to analyze:\n${url}`]);
+  const result = await executeGeminiRequest(model, [prompt, `\n\nURL to analyze:\n${url}`]);
   return extractJson(result.response.text());
 };
 

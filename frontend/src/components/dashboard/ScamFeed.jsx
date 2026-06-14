@@ -5,16 +5,36 @@ const randomBetween = (min, max) => Math.floor(Math.random() * (max - min + 1)) 
 
 // Function to generate the badge value so we get fresh randoms every time
 const scamBlueprints = [
-  { type: "UPI Fraud", city: "Mumbai", state: "MH", badgeFn: () => formatMoney(randomBetween(5000, 50000)), color: "red" },
-  { type: "Fake KYC", city: "Delhi", state: "DL", badgeFn: () => "Account Block", color: "yellow" },
-  { type: "OTP Fraud", city: "Pune", state: "MH", badgeFn: () => formatMoney(randomBetween(3000, 30000)), color: "red" },
-  { type: "Job Scam", city: "Bangalore", state: "KA", badgeFn: () => "₹2,500 Fee", color: "yellow" },
-  { type: "Fake Police", city: "Lucknow", state: "UP", badgeFn: () => formatMoney(randomBetween(10000, 200000)), color: "red" },
-  { type: "Phishing Link", city: "Chennai", state: "TN", badgeFn: () => "Link Blocked", color: "green" },
-  { type: "Loan App Scam", city: "Hyderabad", state: "TS", badgeFn: () => formatMoney(randomBetween(8000, 75000)), color: "red" },
-  { type: "Sextortion", city: "Jaipur", state: "RJ", badgeFn: () => formatMoney(randomBetween(20000, 500000)), color: "red" },
-  { type: "Lottery Scam", city: "Kolkata", state: "WB", badgeFn: () => "₹50,000", color: "red" },
-  { type: "Fake KYC", city: "Ahmedabad", state: "GJ", badgeFn: () => "OTP Leaked", color: "yellow" },
+  { type: "UPI Fraud",            city: "Mumbai",       state: "MH", badgeFn: () => formatMoney(randomBetween(5000, 50000)),    color: "red"    },
+  { type: "Fake KYC",             city: "Delhi",        state: "DL", badgeFn: () => "Account Block",                            color: "yellow" },
+  { type: "OTP Fraud",            city: "Pune",         state: "MH", badgeFn: () => formatMoney(randomBetween(3000, 30000)),    color: "red"    },
+  { type: "Job Scam",             city: "Bangalore",    state: "KA", badgeFn: () => "₹2,500 Fee",                               color: "yellow" },
+  { type: "Fake Police Call",     city: "Lucknow",      state: "UP", badgeFn: () => formatMoney(randomBetween(10000, 200000)),  color: "red"    },
+  { type: "Phishing Link",        city: "Chennai",      state: "TN", badgeFn: () => "Link Blocked",                             color: "green"  },
+  { type: "Loan App Scam",        city: "Hyderabad",    state: "TS", badgeFn: () => formatMoney(randomBetween(8000, 75000)),    color: "red"    },
+  { type: "Sextortion",           city: "Jaipur",       state: "RJ", badgeFn: () => formatMoney(randomBetween(20000, 500000)), color: "red"    },
+  { type: "Lottery Scam",         city: "Kolkata",      state: "WB", badgeFn: () => "₹50,000",                                 color: "red"    },
+  { type: "Fake KYC",             city: "Ahmedabad",    state: "GJ", badgeFn: () => "OTP Leaked",                              color: "yellow" },
+  { type: "Crypto Fraud",         city: "Surat",        state: "GJ", badgeFn: () => formatMoney(randomBetween(50000, 700000)), color: "red"    },
+  { type: "Fake CBI Call",        city: "Noida",        state: "UP", badgeFn: () => formatMoney(randomBetween(30000, 300000)), color: "red"    },
+  { type: "WhatsApp Scam",        city: "Bhopal",       state: "MP", badgeFn: () => "Data Stolen",                             color: "yellow" },
+  { type: "Investment Fraud",     city: "Indore",       state: "MP", badgeFn: () => formatMoney(randomBetween(100000, 900000)),color: "red"    },
+  { type: "QR Code Scam",         city: "Chandigarh",   state: "PB", badgeFn: () => formatMoney(randomBetween(2000, 20000)),   color: "red"    },
+  { type: "Fake TRAI Notice",     city: "Nagpur",       state: "MH", badgeFn: () => "SIM Block Threat",                        color: "yellow" },
+  { type: "Delivery Scam",        city: "Patna",        state: "BR", badgeFn: () => "₹199 Customs Fee",                        color: "yellow" },
+  { type: "Tech Support Scam",    city: "Coimbatore",   state: "TN", badgeFn: () => formatMoney(randomBetween(5000, 40000)),   color: "red"    },
+  { type: "Fake Electricity Bill",city: "Bhubaneswar",  state: "OD", badgeFn: () => "Link Clicked",                            color: "yellow" },
+  { type: "Romance Scam",         city: "Kochi",        state: "KL", badgeFn: () => formatMoney(randomBetween(20000, 200000)), color: "red"    },
+  { type: "Screen Share Fraud",   city: "Gurgaon",      state: "HR", badgeFn: () => formatMoney(randomBetween(15000, 150000)), color: "red"    },
+  { type: "Fake RBI Notice",      city: "Srinagar",     state: "JK", badgeFn: () => "Account Freeze",                          color: "yellow" },
+  { type: "SIM Swap Fraud",       city: "Visakhapatnam",state: "AP", badgeFn: () => formatMoney(randomBetween(10000, 80000)),  color: "red"    },
+  { type: "Insurance Scam",       city: "Vadodara",     state: "GJ", badgeFn: () => "₹5,000 Premium",                          color: "yellow" },
+  { type: "Fake Job Offer",       city: "Dehradun",     state: "UK", badgeFn: () => "₹3,000 Fee",                              color: "yellow" },
+  { type: "Ponzi Scheme",         city: "Raipur",       state: "CG", badgeFn: () => formatMoney(randomBetween(50000, 500000)), color: "red"    },
+  { type: "UPI Collect Fraud",    city: "Agra",         state: "UP", badgeFn: () => formatMoney(randomBetween(5000, 45000)),   color: "red"    },
+  { type: "Fake Scholarship",     city: "Guwahati",     state: "AS", badgeFn: () => "₹1,500 Fee",                              color: "yellow" },
+  { type: "Aadhaar Fraud",        city: "Thiruvananthapuram", state: "KL", badgeFn: () => "Identity Stolen",                   color: "red"    },
+  { type: "Fake Amazon Refund",   city: "Mysore",       state: "KA", badgeFn: () => formatMoney(randomBetween(2000, 15000)),   color: "yellow" },
 ];
 
 const getBadgeClasses = (color) => {
@@ -26,46 +46,49 @@ const getBadgeClasses = (color) => {
   }
 };
 
-const getNextRandomScam = (lastType) => {
-  // Filter out the last type to ensure no consecutive duplicates
-  const available = scamBlueprints.filter(s => s.type !== lastType);
-  const picked = available[Math.floor(Math.random() * available.length)];
+const getNextRandomScam = (recentTypes) => {
+  // Filter out any type that is in the recentTypes array (up to 20)
+  const available = scamBlueprints.filter(s => !recentTypes.includes(s.type));
+  const pool = available.length > 0 ? available : scamBlueprints;
+  const picked = pool[Math.floor(Math.random() * pool.length)];
   return {
     id: Date.now() + Math.random(),
     type: picked.type,
     location: `${picked.city}, ${picked.state}`,
     time: "Just now",
     amount: picked.badgeFn(),
-    badgeColor: picked.color
+    badgeColor: picked.color,
+    rawType: picked.type
   };
 };
 
-// Generate initial list, making sure there are no consecutive duplicates
-const generateInitialFeed = () => {
+// Generate initial list
+const generateInitialFeed = (history) => {
   const feed = [];
-  let lastType = null;
   for (let i = 0; i < 5; i++) {
-    const item = getNextRandomScam(lastType);
+    const item = getNextRandomScam(history);
+    history.unshift(item.rawType);
+    if (history.length > 20) history.pop();
+
     item.time = i === 0 ? "Just now" : `${i * 2 + 1} mins ago`;
     feed.push(item);
-    lastType = item.type;
   }
   return feed;
 };
 
 export default function ScamFeed() {
   const [feed, setFeed] = useState([]);
-  const lastTypeRef = useRef(null);
+  const historyRef = useRef([]);
 
   useEffect(() => {
     // Generate initial feed on mount to shuffle
-    const initial = generateInitialFeed();
+    const initial = generateInitialFeed(historyRef.current);
     setFeed(initial);
-    lastTypeRef.current = initial[0].type;
 
     const interval = setInterval(() => {
-      const newItem = getNextRandomScam(lastTypeRef.current);
-      lastTypeRef.current = newItem.type;
+      const newItem = getNextRandomScam(historyRef.current);
+      historyRef.current.unshift(newItem.rawType);
+      if (historyRef.current.length > 20) historyRef.current.pop();
 
       setFeed(prev => {
         const newFeed = [newItem, ...prev].slice(0, 10);
