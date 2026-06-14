@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const THREAT_FEED = [
@@ -253,10 +253,10 @@ function ResultsPanel({ result, onReset, isDemo = false }) {
 /* ═══════════════════════════════════════════
    MAIN PAGE
 ═══════════════════════════════════════════ */
-export default function AnalyzerPage() {
-  const [activeTab,  setActiveTab]  = useState('message')
-  const [textInput,  setTextInput]  = useState('')
-  const [urlInput,   setUrlInput]   = useState('')
+export default function AnalyzerPage({ lang = 'en' }) {
+  const [activeTab, setActiveTab] = useState('message')
+  const [textInput, setTextInput] = useState('')
+  const [urlInput, setUrlInput] = useState('')
   const [result,     setResult]     = useState(null)
   const [loading,    setLoading]    = useState(false)
   const [error,      setError]      = useState('')
@@ -339,9 +339,10 @@ export default function AnalyzerPage() {
     if (activeTab === 'image') {
       try {
         const formData = new FormData()
-        formData.append('file', imageFile)
+        formData.append('image', imageFile)
+        formData.append('lang', lang)
         const baseUrl = process.env.REACT_APP_API_URL || '';
-        const res = await fetch(`${baseUrl}/api/analyze-image?lang=en`, {
+        const res = await fetch(`${baseUrl}/api/analyze-image`, {
           method: 'POST',
           body: formData,
         })
@@ -363,7 +364,7 @@ export default function AnalyzerPage() {
         const res = await fetch(`${baseUrl}/api/analyze-text`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: textInput, lang: 'en' }),
+          body: JSON.stringify({ text: textInput, lang: lang }),
         })
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
@@ -383,7 +384,7 @@ export default function AnalyzerPage() {
         const res = await fetch(`${baseUrl}/api/analyze-url`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: urlInput, lang: 'en' }),
+          body: JSON.stringify({ url: urlInput, lang: lang }),
         })
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
@@ -405,9 +406,9 @@ export default function AnalyzerPage() {
   const isHttp = urlInput.startsWith('http://') && !urlInput.startsWith('https://')
 
   const TABS = [
-    { id: 'message', icon: '💬', label: 'Message Analysis' },
-    { id: 'url',     icon: '🔗', label: 'URL Scanner' },
-    { id: 'image',   icon: '🖼️', label: 'Image Analysis' },
+    { id: 'message', icon: '💬', label: "Message Analysis" },
+    { id: 'url',     icon: '🔗', label: "URL Scanner" },
+    { id: 'image',   icon: '🖼️', label: "Image Analysis" },
   ]
 
   return (
@@ -604,15 +605,15 @@ export default function AnalyzerPage() {
 
             {/* Threat Statistics */}
             <div className="card p-5 transition-colors duration-300">
-              <div className="text-[12px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-[0.05em] mb-3.5 transition-colors">
+              <div className="text-[12px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-[0.05em] mb-4 transition-colors">
                 Threat Statistics
               </div>
               <div className="grid grid-cols-2 gap-2.5">
                 {[
-                  { label: 'Threats Blocked',  value: stats.blocked.toLocaleString(), delta: '+12%', color: '#EF4444', icon: '🛡' },
-                  { label: 'Detected Scams',   value: stats.scams.toLocaleString(), delta: '+8%',  color: '#F59E0B', icon: '🔍' },
-                  { label: 'Safe Messages',    value: stats.safe.toLocaleString(), delta: '+23%', color: '#22C55E', icon: '✅' },
-                  { label: 'URLs Analyzed',    value: stats.urls.toLocaleString(), delta: '+5%',  color: '#06B6D4', icon: '🔗' },
+                  { label: "Threats Blocked",  value: stats.blocked.toLocaleString(), delta: '+12%', color: '#EF4444', icon: '🛡' },
+                  { label: "Detected Scams",   value: stats.scams.toLocaleString(), delta: '+8%',  color: '#F59E0B', icon: '🔍' },
+                  { label: "Safe Messages",    value: stats.safe.toLocaleString(), delta: '+23%', color: '#22C55E', icon: '✅' },
+                  { label: "URLs Analyzed",    value: stats.urls.toLocaleString(), delta: '+5%',  color: '#06B6D4', icon: '🔗' },
                 ].map(s => (
                   <div key={s.label} className="p-3 rounded-[10px] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 transition-colors">
                     <div className="text-[18px] mb-1.5">{s.icon}</div>
@@ -626,7 +627,7 @@ export default function AnalyzerPage() {
 
             {/* Recent Activity */}
             <div className="card p-5 transition-colors duration-300">
-              <div className="text-[12px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-[0.05em] mb-3.5 transition-colors">
+              <div className="text-[12px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-[0.05em] mb-4 transition-colors">
                 Recent Activity
               </div>
               <div className="flex flex-col gap-2">

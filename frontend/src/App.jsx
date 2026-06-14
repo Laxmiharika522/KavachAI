@@ -91,7 +91,7 @@ export default function App() {
               background: lang === l ? 'rgba(0,255,136,0.15)' : 'transparent',
               color: lang === l ? '#00ff88' : '#8b949e'
             }}>
-              {l === 'en' ? 'EN' : 'हिंदी'}
+              {l === 'en' ? 'EN' : 'HI'}
             </button>
           ))}
         </div>

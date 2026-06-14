@@ -81,7 +81,7 @@ export default function Navbar({ lang, onLangToggle, session }) {
               className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors border border-transparent dark:hover:border-white/10"
             >
               <Globe className="w-4 h-4 text-slate-500 dark:text-gray-400" />
-              <span>{lang === 'en' ? 'हिन्दी' : 'EN'}</span>
+              <span>{lang === 'en' ? 'EN' : 'HI'}</span>
             </button>
 
             {/* Notifications */}
@@ -188,7 +188,7 @@ export default function Navbar({ lang, onLangToggle, session }) {
                 className="flex items-center gap-3 py-2 rounded-xl text-base font-semibold text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-all"
               >
                 <Globe className="w-5 h-5" />
-                {lang === 'en' ? 'EN' : 'हिन्दी'}
+                {lang === 'en' ? 'EN' : 'HI'}
               </button>
               
               <button

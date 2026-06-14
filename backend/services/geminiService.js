@@ -100,7 +100,7 @@ const analyzeImageWithGemini = async (file, lang = 'en') => {
   
   let prompt = VISION_PROMPT;
   if (lang === 'hi') {
-    prompt += '\nTranslate your entire JSON response values into conversational Hindi.';
+    prompt += '\nCRITICAL REQUIREMENT: YOU MUST TRANSLATE ALL TEXT VALUES IN THE JSON RESPONSE (scam_type, red_flags, recommended_action, ai_explanation, indicators, severity) INTO HINDI. DO NOT RETURN ENGLISH TEXT FOR THESE FIELDS.';
   }
 
   const result = await executeGeminiRequest(model, [
@@ -122,7 +122,7 @@ const analyzeTextWithGemini = async (text, lang = 'en') => {
   
   let prompt = TEXT_PROMPT;
   if (lang === 'hi') {
-    prompt += '\nTranslate your entire JSON response values into conversational Hindi.';
+    prompt += '\nCRITICAL REQUIREMENT: YOU MUST TRANSLATE ALL TEXT VALUES IN THE JSON RESPONSE (scam_type, red_flags, recommended_action, ai_explanation) INTO HINDI. DO NOT RETURN ENGLISH TEXT FOR THESE FIELDS.';
   }
 
   const result = await executeGeminiRequest(model, [prompt, `\n\nMessage to analyze:\n${text}`]);
@@ -135,7 +135,7 @@ const analyzeUrlWithGemini = async (url, lang = 'en') => {
 
   let prompt = URL_PROMPT;
   if (lang === 'hi') {
-    prompt += '\nTranslate your entire JSON response values into conversational Hindi.';
+    prompt += '\nCRITICAL REQUIREMENT: YOU MUST TRANSLATE ALL TEXT VALUES IN THE JSON RESPONSE (scam_type, red_flags, recommended_action, ai_explanation) INTO HINDI. DO NOT RETURN ENGLISH TEXT FOR THESE FIELDS.';
   }
 
   const result = await executeGeminiRequest(model, [prompt, `\n\nURL to analyze:\n${url}`]);

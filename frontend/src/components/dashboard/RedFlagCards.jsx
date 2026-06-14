@@ -17,7 +17,7 @@ export default function RedFlagCards({ flags = [], lang = 'en' }) {
     <div>
       <h3 className="text-sm font-bold uppercase tracking-widest mb-3"
         style={{ color: 'var(--red)' }}>
-        ⚠️ {lang === 'en' ? 'Red Flags Detected' : 'संदिग्ध संकेत'}
+        ⚠️ {'Red Flags Detected'}
       </h3>
       <motion.ul
         variants={container}

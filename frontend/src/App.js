@@ -25,7 +25,7 @@ function AppLayout({ session }) {
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }}>
       <Navbar lang={lang} onLangToggle={toggleLang} session={session} />
       <Routes>
-        <Route path="/analyzer" element={<AnalyzerPage />} />
+        <Route path="/analyzer" element={<AnalyzerPage lang={lang} />} />
         <Route path="/dashboard" element={<Dashboard lang={lang} />} />
         <Route path="/encyclopedia" element={<Encyclopedia lang={lang} />} />
         <Route path="/breach-check" element={<BreachCheckPage />} />

@@ -18,7 +18,7 @@ export default function ActionCard({ action = '', lang = 'en' }) {
         <span className="text-xl">✅</span>
         <h3 className="font-bold text-sm uppercase tracking-widest"
           style={{ color: 'var(--accent)' }}>
-          {lang === 'en' ? 'Recommended Action' : 'अनुशंसित कार्रवाई'}
+          {'Recommended Action'}
         </h3>
       </div>
       <p className="text-base font-semibold leading-relaxed" style={{ color: 'var(--text-primary)' }}>
@@ -38,7 +38,7 @@ export default function ActionCard({ action = '', lang = 'en' }) {
           color: 'var(--red)',
         }}
       >
-        🚨 {lang === 'en' ? 'Report on Cybercrime.gov.in' : 'साइबरक्राइम पोर्टल पर रिपोर्ट करें'}
+        🚨 {'Report on Cybercrime.gov.in'}
         <span>↗</span>
       </a>
     </motion.div>

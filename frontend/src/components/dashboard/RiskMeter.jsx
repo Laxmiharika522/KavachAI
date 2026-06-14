@@ -10,9 +10,9 @@ function getColor(score) {
 }
 
 function getLabel(score, lang) {
-  if (score >= 70) return lang === 'en' ? '🔴 HIGH RISK' : '🔴 उच्च जोखिम'
-  if (score >= 30) return lang === 'en' ? '🟡 MEDIUM RISK' : '🟡 मध्यम जोखिम'
-  return lang === 'en' ? '🟢 LOW RISK' : '🟢 कम जोखिम'
+  if (score >= 70) return '🔴 HIGH RISK'
+  if (score >= 30) return '🟡 MEDIUM RISK'
+  return '🟢 LOW RISK'
 }
 
 export default function RiskMeter({ score = 0, scamType = '', lang = 'en' }) {
@@ -53,7 +53,7 @@ export default function RiskMeter({ score = 0, scamType = '', lang = 'en' }) {
           </text>
           <text x="110" y="126" textAnchor="middle" fill="rgba(255,255,255,0.35)"
             style={{ fontSize: '0.75rem', fontFamily: 'Inter', fontWeight: '500' }}>
-            {lang === 'en' ? '/ 100' : '/ १००'}
+            {'/ 100'}
           </text>
         </svg>
       </div>
