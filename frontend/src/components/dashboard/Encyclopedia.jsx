@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldAlert, CreditCard, Landmark, ShoppingBag, Briefcase, Bitcoin, Siren, Ticket, ShieldOff, AlertTriangle, Activity, Crosshair, Terminal, Zap, Fingerprint } from 'lucide-react';
+import { ShieldAlert, CreditCard, Landmark, ShoppingBag, Briefcase, Bitcoin, Siren, Ticket, ShieldOff, AlertTriangle, Activity, Crosshair, Terminal, Zap, Fingerprint, Search, X } from 'lucide-react';
 
 const scams = [
   {
@@ -167,7 +167,24 @@ const scams = [
 
 export default function Encyclopedia() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const activeScam = scams[activeIndex];
+  const [searchQuery, setSearchQuery] = useState('');
+  const [severityFilter, setSeverityFilter] = useState('ALL');
+
+  const filteredScams = scams.filter(scam => {
+    const matchesSeverity = severityFilter === 'ALL' || scam.severity === severityFilter;
+    const q = searchQuery.toLowerCase();
+    const matchesSearch = !q ||
+      scam.name.toLowerCase().includes(q) ||
+      scam.metadata.vector.toLowerCase().includes(q) ||
+      scam.trigger.toLowerCase().includes(q);
+    return matchesSeverity && matchesSearch;
+  });
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [searchQuery, severityFilter]);
+
+  const activeScam = filteredScams[activeIndex];
 
   return (
     <div className="min-h-[calc(100vh-72px)] bg-slate-50 dark:bg-[#050B18] p-4 md:p-6 lg:p-8 font-sans selection:bg-red-500/30 overflow-hidden flex flex-col transition-colors duration-300">
@@ -188,7 +205,7 @@ export default function Encyclopedia() {
                <Fingerprint className="w-5 h-5 text-slate-400 dark:text-gray-500 transition-colors" />
                <div>
                  <p className="text-[10px] text-slate-500 dark:text-gray-500 font-bold uppercase tracking-widest transition-colors">Active Records</p>
-                 <p className="text-lg font-black text-slate-900 dark:text-white font-mono transition-colors">08</p>
+                 <p className="text-lg font-black text-slate-900 dark:text-white font-mono transition-colors">{String(scams.length).padStart(2, '0')}</p>
                </div>
              </div>
           </header>
@@ -196,51 +213,107 @@ export default function Encyclopedia() {
           <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0">
              
              {/* Left Panel - Threat Index */}
-             <div className="w-full lg:w-96 flex flex-col gap-2 overflow-y-auto pr-2" style={{ scrollbarWidth: 'none' }}>
-                {scams.map((scam, index) => {
-                  const isActive = index === activeIndex;
-                  return (
-                    <button 
-                      key={scam.id}
-                      onClick={() => setActiveIndex(index)}
-                      className={`relative flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group text-left ${
-                        isActive 
-                          ? 'bg-white dark:bg-white/10 border-slate-200 dark:border-white/20 shadow-md dark:shadow-lg' 
-                          : 'bg-slate-100/50 dark:bg-white/[0.02] border-transparent dark:border-white/5 hover:bg-white dark:hover:bg-white/[0.05] hover:border-slate-200 dark:hover:border-white/10 shadow-sm dark:shadow-none'
-                      } border`}
-                    >
-                      {isActive && (
-                        <motion.div 
-                          layoutId="active-indicator" 
-                          className="absolute left-0 top-0 bottom-0 w-1 bg-red-500 rounded-l-xl shadow-[0_0_10px_rgba(239,68,68,0.4)] dark:shadow-[0_0_10px_rgba(239,68,68,0.8)]"
-                        />
-                      )}
-                      
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors duration-300 ${
-                        isActive ? 'bg-red-50 dark:bg-red-500/20 text-red-600 dark:text-red-500 border border-red-200 dark:border-red-500/30' : 'bg-slate-200 dark:bg-gray-800 text-slate-500 dark:text-gray-400 border border-slate-300 dark:border-gray-700'
-                      }`}>
-                        {scam.icon}
-                      </div>
-                      
-                      <div className="flex-1">
-                        <h3 className={`font-bold tracking-tight text-sm transition-colors ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-gray-400 group-hover:text-slate-900 dark:group-hover:text-gray-200'}`}>
-                          {scam.name}
-                        </h3>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActive ? 'bg-red-500 animate-pulse' : 'bg-slate-400 dark:bg-gray-600'}`}></span>
-                          <span className="text-[9px] font-black tracking-widest uppercase text-slate-500 dark:text-gray-500 transition-colors">
-                            {scam.metadata.vector}
-                          </span>
-                        </div>
-                      </div>
+             <div className="w-full lg:w-96 flex flex-col gap-3">
+
+                {/* Search Bar */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-gray-500 pointer-events-none" />
+                  <input
+                    type="text"
+                    placeholder="Search threats..."
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-8 py-2.5 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500/40 transition-all"
+                  />
+                  {searchQuery && (
+                    <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors">
+                      <X className="w-3.5 h-3.5" />
                     </button>
-                  );
-                })}
+                  )}
+                </div>
+
+                {/* Severity Filter Tabs */}
+                <div className="flex gap-1.5 flex-wrap">
+                  {['ALL', 'CRITICAL', 'HIGH', 'MEDIUM'].map(level => (
+                    <button
+                      key={level}
+                      onClick={() => setSeverityFilter(level)}
+                      className={`px-3 py-1 rounded-md text-[10px] font-black tracking-widest uppercase transition-all duration-200 ${
+                        severityFilter === level
+                          ? level === 'ALL'      ? 'bg-slate-800 dark:bg-white text-white dark:text-slate-900 shadow-sm'
+                          : level === 'CRITICAL' ? 'bg-red-500 text-white shadow-sm'
+                          : level === 'HIGH'     ? 'bg-orange-500 text-white shadow-sm'
+                          :                        'bg-yellow-500 text-white shadow-sm'
+                          : 'bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-gray-500 hover:bg-slate-200 dark:hover:bg-white/10'
+                      }`}
+                    >
+                      {level}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Scam List */}
+                <div className="flex flex-col gap-2 overflow-y-auto pr-2 flex-1" style={{ scrollbarWidth: 'none' }}>
+                  {filteredScams.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                      <Search className="w-8 h-8 text-slate-300 dark:text-gray-700 mb-3" />
+                      <p className="text-sm font-bold text-slate-500 dark:text-gray-600">No threats found</p>
+                      <p className="text-xs text-slate-400 dark:text-gray-700 mt-1">Try a different search or filter</p>
+                    </div>
+                  ) : (
+                    filteredScams.map((scam, index) => {
+                      const isActive = index === activeIndex;
+                      return (
+                        <button 
+                          key={scam.id}
+                          onClick={() => setActiveIndex(index)}
+                          className={`relative flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group text-left ${
+                            isActive 
+                              ? 'bg-white dark:bg-white/10 border-slate-200 dark:border-white/20 shadow-md dark:shadow-lg' 
+                              : 'bg-slate-100/50 dark:bg-white/[0.02] border-transparent dark:border-white/5 hover:bg-white dark:hover:bg-white/[0.05] hover:border-slate-200 dark:hover:border-white/10 shadow-sm dark:shadow-none'
+                          } border`}
+                        >
+                          {isActive && (
+                            <motion.div 
+                              layoutId="active-indicator" 
+                              className="absolute left-0 top-0 bottom-0 w-1 bg-red-500 rounded-l-xl shadow-[0_0_10px_rgba(239,68,68,0.4)] dark:shadow-[0_0_10px_rgba(239,68,68,0.8)]"
+                            />
+                          )}
+                          
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors duration-300 ${
+                            isActive ? 'bg-red-50 dark:bg-red-500/20 text-red-600 dark:text-red-500 border border-red-200 dark:border-red-500/30' : 'bg-slate-200 dark:bg-gray-800 text-slate-500 dark:text-gray-400 border border-slate-300 dark:border-gray-700'
+                          }`}>
+                            {scam.icon}
+                          </div>
+                          
+                          <div className="flex-1">
+                            <h3 className={`font-bold tracking-tight text-sm transition-colors ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-gray-400 group-hover:text-slate-900 dark:group-hover:text-gray-200'}`}>
+                              {scam.name}
+                            </h3>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActive ? 'bg-red-500 animate-pulse' : 'bg-slate-400 dark:bg-gray-600'}`}></span>
+                              <span className="text-[9px] font-black tracking-widest uppercase text-slate-500 dark:text-gray-500 transition-colors">
+                                {scam.metadata.vector}
+                              </span>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
              </div>
 
              {/* Right Panel - Threat Dossier */}
              <div className="flex-1 bg-white dark:bg-[#0A1128] border border-slate-200 dark:border-white/5 shadow-xl dark:shadow-none rounded-2xl relative overflow-hidden flex flex-col transition-colors duration-300">
                 <AnimatePresence mode="wait">
+                  {!activeScam ? (
+                    <motion.div key="no-results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center text-center p-10">
+                      <Search className="w-16 h-16 text-slate-200 dark:text-gray-800 mb-4" />
+                      <p className="text-2xl font-black text-slate-300 dark:text-gray-700">No records match</p>
+                      <p className="text-sm text-slate-400 dark:text-gray-600 mt-2">Adjust your search or filter</p>
+                    </motion.div>
+                  ) : (
                   <motion.div 
                     key={activeScam.id}
                     initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
@@ -351,6 +424,7 @@ export default function Encyclopedia() {
 
                     </div>
                   </motion.div>
+                  )}
                 </AnimatePresence>
              </div>
              
