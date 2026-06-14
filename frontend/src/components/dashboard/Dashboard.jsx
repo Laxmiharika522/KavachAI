@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ScamFeed from './ScamFeed';
 import IndiaMap from './IndiaMap';
 
-const stats = [
-  { label: "Scams Detected Today", value: "12,453", color: "text-red-500" },
-  { label: "Active Threats", value: "45", color: "text-red-400" },
-  { label: "Total Money Saved", value: "\u20b94.2 Cr", color: "text-green-500" },
-  { label: "National Threat Level", value: "HIGH", color: "text-red-500" }
-];
+// Stats will be dynamic inside the component
 
 const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const INR = (n) => "\u20b9" + n.toLocaleString("en-IN");
@@ -77,6 +72,31 @@ const NewsTicker = () => {
 };
 
 export default function Dashboard() {
+  const [selectedRegion, setSelectedRegion] = useState(null);
+  const [liveStats, setLiveStats] = useState({
+    scamsDetected: 12453,
+    activeThreats: 45,
+    moneySaved: 4.20
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveStats(prev => ({
+        scamsDetected: prev.scamsDetected + Math.floor(Math.random() * 3), // +0 to 2
+        activeThreats: Math.max(30, Math.min(60, prev.activeThreats + (Math.floor(Math.random() * 3) - 1))), // fluctuate +/- 1
+        moneySaved: prev.moneySaved + (Math.random() * 0.01) // +0 to 0.01 Cr
+      }));
+    }, 4500);
+    return () => clearInterval(interval);
+  }, []);
+
+  const stats = [
+    { label: "Scams Detected Today", value: liveStats.scamsDetected.toLocaleString("en-IN"), color: "text-red-500" },
+    { label: "Active Threats", value: liveStats.activeThreats.toString(), color: "text-red-400" },
+    { label: "Total Money Saved", value: `\u20b9${liveStats.moneySaved.toFixed(2)} Cr`, color: "text-green-500" },
+    { label: "National Threat Level", value: "HIGH", color: "text-red-500" }
+  ];
+
   return (
     <div className="p-4 md:p-8 lg:p-12 text-slate-900 dark:text-white font-sans max-w-[1600px] mx-auto pb-20 transition-colors duration-300">
       <header className="mb-12">
@@ -105,7 +125,7 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
          <div className="xl:col-span-2">
-           <IndiaMap />
+           <IndiaMap selectedRegion={selectedRegion} onRegionSelect={setSelectedRegion} />
          </div>
          <div className="xl:col-span-1">
            <ScamFeed />
