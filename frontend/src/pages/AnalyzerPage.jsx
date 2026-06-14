@@ -339,7 +339,7 @@ export default function AnalyzerPage({ lang = 'en' }) {
     if (activeTab === 'image') {
       try {
         const formData = new FormData()
-        formData.append('image', imageFile)
+        formData.append('file', imageFile)
         formData.append('lang', lang)
         const baseUrl = process.env.REACT_APP_API_URL || '';
         const res = await fetch(`${baseUrl}/api/analyze-image`, {
