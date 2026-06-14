@@ -1,0 +1,192 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #f8fafc;
+  --bg-base: #f8fafc;
+  --bg-card: #ffffff;
+  --border: rgba(0, 0, 0, 0.1);
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+  --accent: #00D084;
+  --red: #ef4444;
+  --btn-sec-bg: rgba(0, 0, 0, 0.02);
+  --btn-sec-hover: rgba(0, 0, 0, 0.05);
+  --skeleton-bg1: rgba(0, 0, 0, 0.05);
+  --skeleton-bg2: rgba(0, 0, 0, 0.08);
+}
+
+.dark {
+  --bg-primary: #050B18;
+  --bg-base: #050B18;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --border: rgba(255, 255, 255, 0.1);
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+  --accent: #00D084;
+  --red: #ef4444;
+  --btn-sec-bg: rgba(255, 255, 255, 0.05);
+  --btn-sec-hover: rgba(255, 255, 255, 0.1);
+  --skeleton-bg1: rgba(255, 255, 255, 0.05);
+  --skeleton-bg2: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Custom Utilities */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #00D084, #06B6D4);
+  color: #020817;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.9; }
+
+.btn-secondary {
+  background: var(--btn-sec-bg);
+  color: var(--text-secondary);
+  font-weight: 600;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-secondary:hover { background: var(--btn-sec-hover); }
+
+.btn-ghost {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 4px 10px;
+}
+.badge-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.badge-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fde68a;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.badge-success {
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+.badge-neutral {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+}
+
+.input-field {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.2s;
+}
+.input-field:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-bar {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 4px;
+}
+.tab-item {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.tab-item.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--skeleton-bg1) 25%, var(--skeleton-bg2) 50%, var(--skeleton-bg1) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+}
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.pulse-dot {
+  animation: pulse-dot-anim 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse-dot-anim {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+
+.spin {
+  animation: spin-anim 1s linear infinite;
+}
+@keyframes spin-anim {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .mobile-hide { display: none !important; }
+  .sidebar-hide { display: none !important; }
+}
